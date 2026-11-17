@@ -19,14 +19,14 @@ Plano técnico e de produto: https://claude.ai/artifact/6HT13WxMtRRaFUngv5LW3u
 
 ```bash
 pnpm install
-pnpm test        # 18 testes do núcleo
+pnpm test        # 21 testes do núcleo
 pnpm typecheck
 pnpm --filter @ceu/sky-engine bench   # custo de CPU do pré-cálculo
 ```
 
 ## Pendências antes de confiar nos horários
 
-1. Trocar a órbita sintética dos testes por elementos reais do CelesTrak e conferir 20 passagens
+1. Ampliar a conferência com dados reais (hoje: 2 passagens, ao minuto) para 20 passagens, ao segundo,
    com uma fonte externa (ver `packages/sky-engine/test/README.md`).
 2. Repetir o benchmark dentro do runtime da Cloudflare (ADR 0003).
 3. Medir o erro entre centro e borda da célula (ADR 0002).
