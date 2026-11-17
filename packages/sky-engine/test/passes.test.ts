@@ -53,3 +53,14 @@ describe("findVisiblePasses (órbita sintética: testa invariantes, não horári
     expect(elementsAgeHours(passes[0]!.elementsEpoch, new Date("2026-11-18T12:00:00Z"))).toBeCloseTo(48, 5);
   });
 });
+
+describe("fronteira entre dias", () => {
+  it("calcular dia a dia dá exatamente as mesmas passagens que calcular o período inteiro", () => {
+    const DAY = 86_400_000;
+    const whole = findVisiblePasses(ISS_LIKE_SYNTHETIC, SAO_PAULO, { from, days: 60 });
+    const byDay = Array.from({ length: 60 }, (_, d) =>
+      findVisiblePasses(ISS_LIKE_SYNTHETIC, SAO_PAULO, { from: new Date(from.getTime() + d * DAY), days: 1 }),
+    ).flat();
+    expect(byDay.map((p) => p.peak.time.toISOString())).toEqual(whole.map((p) => p.peak.time.toISOString()));
+  });
+});

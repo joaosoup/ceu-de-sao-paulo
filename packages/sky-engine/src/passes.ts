@@ -59,11 +59,21 @@ export function findVisiblePasses(
   const passes: VisiblePass[] = [];
 
   // Varredura grossa: acha janelas acima do horizonte. Fina: só dentro delas.
+  // Uma passagem pertence à janela em que COMEÇA: a que já está no céu em `from` fica para
+  // quem calculou o período anterior, e a que cruza o fim é seguida até terminar. Sem isso,
+  // tarefas de dias vizinhos produziriam pedaços diferentes da mesma passagem.
   let windowStart: number | null = null;
   let coarseMax = -90;
-  for (let ms = startMs; ms <= endMs + COARSE_STEP_MS; ms += COARSE_STEP_MS) {
-    const s = ms <= endMs ? sample(ms) : null;
+  let skipping = (sample(startMs)?.elevation ?? -1) > 0;
+  const hardStop = endMs + 30 * 60_000;
+  for (let ms = startMs + COARSE_STEP_MS; ms <= hardStop; ms += COARSE_STEP_MS) {
+    if (ms > endMs && windowStart === null) break;
+    const s = sample(ms);
     const above = s !== null && s.elevation > 0;
+    if (skipping) {
+      if (!above) skipping = false;
+      continue;
+    }
     if (above) {
       if (windowStart === null) {
         windowStart = ms - COARSE_STEP_MS;
