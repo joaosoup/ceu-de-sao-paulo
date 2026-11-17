@@ -19,5 +19,9 @@
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
     "vitest": "^3.0.0"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./astro": "./src/astro.ts"
   }
 }

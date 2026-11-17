@@ -9,24 +9,27 @@ Plano técnico e de produto: https://claude.ai/artifact/6HT13WxMtRRaFUngv5LW3u
 
 | Pasta | O que é | Estado |
 | --- | --- | --- |
-| `packages/sky-engine` | Núcleo de cálculo, sem rede nem banco | Pronto (v0.1), falta validar com dados reais |
-| `apps/worker` | Cloudflare Worker: API, cron e filas | A fazer (semanas 3 e 4) |
-| `apps/web` | PWA em Angular | A fazer (semanas 3 a 6) |
-| `data/` | Tabelas fixas (municípios, chuvas de meteoros) | A fazer |
-| `docs/adr/` | Decisões de arquitetura | 3 registradas |
+| `packages/sky-engine` | Núcleo de cálculo, sem rede nem banco | Pronto; passagens conferidas ao minuto com fonte externa |
+| `apps/worker` | Cloudflare Worker: API, crons, filas, web push | Pronto e testado localmente; falta publicar |
+| `apps/web` | PWA em Angular | Pronta; falta testar alertas em aparelhos reais |
+| `docs/adr/` | Decisões de arquitetura | 4 registradas |
+| `docs/DEPLOY.md` | Passo a passo para colocar no ar | |
 
 ## Rodar
 
 ```bash
 pnpm install
-pnpm test        # 21 testes do núcleo
-pnpm typecheck
-pnpm --filter @ceu/sky-engine bench   # custo de CPU do pré-cálculo
+pnpm test        # 22 testes do núcleo + 18 do Worker
+pnpm --filter @ceu/web build
 ```
 
-## Pendências antes de confiar nos horários
+Para subir tudo localmente e para publicar, veja `docs/DEPLOY.md`.
 
-1. Ampliar a conferência com dados reais (hoje: 2 passagens, ao minuto) para 20 passagens, ao segundo,
-   com uma fonte externa (ver `packages/sky-engine/test/README.md`).
-2. Repetir o benchmark dentro do runtime da Cloudflare (ADR 0003).
-3. Medir o erro entre centro e borda da célula (ADR 0002).
+## Pendências (nenhuma se resolve só com código)
+
+1. Publicar na Cloudflare e medir a CPU real das tarefas (ADR 0003).
+2. Receber um alerta de verdade em um Android e em um iPhone (ADR 0004).
+3. Conferir 20 passagens ao segundo com o Heavens-Above (hoje: 2, ao minuto).
+4. Confirmar na prática as chamadas ao CelesTrak e ao Open-Meteo a partir da Cloudflare.
+5. Limite de requisições por IP na criação de inscrições (hoje há só validação de entrada).
+6. Medir o erro entre centro e borda da célula (ADR 0002).
